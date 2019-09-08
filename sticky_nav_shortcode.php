@@ -192,13 +192,13 @@ function load_sticky_nav_menu($atts) {
 
       /** NavHeight getter to update depending on watcher */
       function getNavHeight() {
-		if($wpadmin.length > 0) {
-			$wpadminHeight = $wpadmin.height()
-			$navHeight = $wpadminHeight + $('#header-outer').outerHeight()
-			return $navHeight
-		} else {
-			return $('#header-outer').outerHeight()
-		}
+	if($wpadmin.length > 0) {
+		$wpadminHeight = $wpadmin.height()
+		$navHeight = $wpadminHeight + $('#header-outer').outerHeight()
+		return $navHeight
+	} else {
+		return $('#header-outer').outerHeight()
+	}
       }
 
       /** Calculates sticky in relation to header and row padding */
