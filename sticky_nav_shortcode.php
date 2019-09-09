@@ -44,9 +44,14 @@ function load_sticky_nav_menu($atts) {
       padding: 15px;
       opacity: 0;
       box-shadow: 0px 1px 8px rgba(0, 0, 0, .2);
-      z-index: 20;
+      z-index: 2000;
       transform: translateY(-1000px);
-	  visibility: visible;
+      visibility: visible;
+      margin-bottom: 0 !important;
+    }
+	  
+    .sticky-nav-wrapper-mobile ul {
+	margin-bottom: 10px;
     }
 
     .sticky-nav-wrapper-mobile ul a:hover {
@@ -73,9 +78,9 @@ function load_sticky_nav_menu($atts) {
       left: 0;
       background: #292929;
       color: #fff;
-      text-align: right;
-      padding-right: 14px;
-      z-index: 20;
+	  font-size: 13px;
+	  padding: 0 14px 0 31px;
+      z-index: 2000;
       margin-bottom: 0 !important;
       opacity: 0;
       transform: none;
@@ -90,12 +95,29 @@ function load_sticky_nav_menu($atts) {
     #sticky-nav-mobile-icon {
       background: transparent;
       font-size: 13px;
+	  line-height: 33px;
+	  width: 25px;
       transform: translateY(0);
       transition: all .3s ease;
     }
 
     #sticky-nav-mobile-icon.active {
       transform: rotate(180deg);
+    }
+	  
+    .sticky-back-to-top {
+	padding: 25px 10px 0 0;
+	text-align: right;
+	position: absolute;
+	right: 15px;
+	bottom: 35px;
+    }
+	  
+    .sticky-back-to-top .icon-angle-up {
+	font-size: 14px;
+	line-height: 30px;
+	border: 1px solid #fff;
+	background: transparent;
     }
 
     @media (min-width: 690px) {
@@ -150,7 +172,7 @@ function load_sticky_nav_menu($atts) {
 <?php } ?>
 
   <!-- Mobile Menu Template -->
-  <div class="sticky-nav-mobile-click"><i id="sticky-nav-mobile-icon" class="icon-angle-down"></i></div>
+  <div id="sticky-top" class="sticky-nav-mobile-click">Menu<i id="sticky-nav-mobile-icon" class="icon-angle-down"></i></div>
   <div id="stick-nav-mobile-<?php echo get_the_ID(); ?>" class="sticky-nav-wrapper-mobile">
     <ul>
       <?php
@@ -161,6 +183,7 @@ function load_sticky_nav_menu($atts) {
     </ul>
     <h4><?php echo $cta_text; ?></h4>
     <a class="kochava-button-green" href="<?php echo $cta_url; ?>" target="_blank"><?php echo $cta_btn_text; ?></a>
+	  <span id="sticky-back-to-top" class="sticky-back-to-top"><i class="icon-angle-up"></i></span>
   </div>
 
   <script>
@@ -173,6 +196,8 @@ function load_sticky_nav_menu($atts) {
       var $stickyNavMobileClick = $('.sticky-nav-mobile-click')
       var $stickyNavMobileWrapper = $('.sticky-nav-wrapper-mobile')
       var $stickyNavMobileIcon = $('#sticky-nav-mobile-icon')
+      var $bodyHtml = $('body, html')
+      var $stickyBackToTop = $('#sticky-back-to-top')
 
       /* Getters, Setters and Calcs */
       var $navHeight = $('#header-outer').outerHeight()
@@ -183,6 +208,7 @@ function load_sticky_nav_menu($atts) {
       var stickyNavMobileClickHeight = $('.sticky-nav-mobile-click').outerHeight()
       var offsetCalc = getPageheaderOffset()
       var $wpadminHeight = 0
+      var $windowHeight = $window.height()
 
       /** Get pageheader offset to set sticky */
       function getPageheaderOffset() {
@@ -234,16 +260,33 @@ function load_sticky_nav_menu($atts) {
       /** icon animation */
       $stickyNavMobileClick.on('click', function() {
         isOpen = !isOpen
+	if($windowHeight < 500){
+	  $stickyNavMobileWrapper.css({
+		  overflowY: 'scroll',
+		  height: stickyNavMobileHeight = 400
+	  })
+
+	  $('.sticky-back-to-top').css({
+		  bottom: '-20px'
+	  })
+	}
+		  
         if (isOpen) {
           $stickyNavMobileWrapper.css({
             transition: 'transform .4s ease, opacity .4s ease .25s, visibility .4s ease',
             opacity: 1,
             transform: 'translateY(0)',
-			visibility: 'visible'
+			visibility: 'visible',
+			height: stickyNavMobileHeight
           })
           $stickyNavMobileIcon.addClass('active')
-		  $('.wpb_row > .span_12').css({
-			zIndex: 'initial' 
+			
+	  $('.wpb_row > .span_12').css({
+		zIndex: 'initial' 
+	  })
+			
+		  $('#fc_frame, #fc_frame.fc-widget-normal').css({
+			display: 'none'
 		  })
         }
         else {
@@ -251,22 +294,36 @@ function load_sticky_nav_menu($atts) {
             transition: 'transform .4s ease .3s, opacity .4s ease, visibility .4s ease',
             opacity: 0,
             transform: 'translateY(-' + (stickyNavMobileHeight + stickyNavMobileClickHeight) + 'px)',
-			visibility: 'hidden'
+			visibility: 'hidden',
+			height: 'initial'
           })
           $stickyNavMobileIcon.removeClass('active')
-		  $('.wpb_row > .span_12').css({
-			zIndex: '10' 
-		  })
+	    $('.wpb_row > .span_12').css({
+		zIndex: '10' 
+	    })
+
+	    $('#fc_frame, #fc_frame.fc-widget-normal').css({
+		display: 'block'
+	    })
         }
       })
-
-      /** Menu close on link click */
-      $stickyNavMobileWrapper.find('a').on('click', function() {
-        isOpen = false
+		
+	  /** Helper function handling menu close animations/classes */
+      function menuCloseFunc(){
+	isOpen = false
         $stickyNavMobileWrapper.css({
           transform: 'translateY(-' + (stickyNavMobileHeight + stickyNavMobileClickHeight) + 'px)'
         })
         $stickyNavMobileIcon.removeClass('active')
+		  
+	$('#fc_frame, #fc_frame.fc-widget-normal').css({
+	  display: 'block'
+	})
+      }
+
+      /** Menu close on link click */
+      $stickyNavMobileWrapper.find('a').on('click', function() {
+	menuCloseFunc()
       })
 
       /* watch scroll postion */
@@ -340,6 +397,14 @@ function load_sticky_nav_menu($atts) {
 		  }) 		  
         }
       })
+		
+	  $stickyBackToTop.on('click touchend',(function(){
+        menuCloseFunc()
+        $stickyNavMobileIcon.removeClass('active')
+		  setTimeout(function(){
+			  $bodyHtml.animate({scrollTop: 0}, 800)
+		  }, 300)  
+	  }))
     })
 
   </script>
