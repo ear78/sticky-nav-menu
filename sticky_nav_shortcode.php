@@ -1,418 +1,418 @@
 <?php
 
 function load_sticky_nav_menu($atts) {
-  extract(shortcode_atts([
-    'layout' => 'button-bottom',
-    'titles' => '',
-    'cta_text' => 'Take the next step!',
-    'cta_btn_text' => 'Request a Demo',
-    'cta_url' => ''
-  ], $atts));
-	
-  $titles = vc_param_group_parse_atts($atts['titles']);
+	extract(shortcode_atts([
+		'layout' => 'button-bottom',
+		'titles' => '',
+		'cta_text' => 'Take the next step!',
+		'cta_btn_text' => 'Request a Demo',
+		'cta_url' => ''
+	], $atts));
 
-  ob_start(); ?>
-  <style>
+	$titles = vc_param_group_parse_atts($atts['titles']);
 
-    .sticky-nav-wrapper {
-      display: none;
-    }
+	ob_start(); ?>
+	<style>
 
-    .sticky-nav-wrapper ul,
-    .sticky-nav-wrapper-mobile ul {
-      margin: 0 0 30px 0;
-    }
+		.sticky-nav-wrapper {
+			display: none;
+		}
 
-    .sticky-nav-wrapper li,
-    .sticky-nav-wrapper-mobile li {
-      list-style-type: none;
-    }
+		.sticky-nav-wrapper ul,
+		.sticky-nav-wrapper-mobile ul {
+			margin: 0 0 30px 0;
+		}
 
-    .kochava-button-green {
-      margin-top: 12px;
-      margin-bottom: 12px;
-    }
+		.sticky-nav-wrapper li,
+		.sticky-nav-wrapper-mobile li {
+			list-style-type: none;
+		}
 
-    /* Mobile Styles */
-    .sticky-nav-wrapper-mobile {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      left: 0;
-      background: #292929;
-      color: #fff;
-      padding: 15px;
-      opacity: 0;
-      box-shadow: 0px 1px 8px rgba(0, 0, 0, .2);
-      z-index: 2000;
-      transform: translateY(-1000px);
-      visibility: visible;
-      margin-bottom: 0 !important;
-    }
-	  
-    .sticky-nav-wrapper-mobile ul {
-	margin-bottom: 10px;
-    }
+		.kochava-button-green {
+			margin-top: 12px;
+			margin-bottom: 12px;
+			padding: 10px 28px;
+		}
 
-    .sticky-nav-wrapper-mobile ul a:hover {
-      display: inline-block;
-      padding: 0 15px;
-      background: #3a3a3a;
-    }
+		/* Mobile Styles */
+		.sticky-nav-wrapper-mobile {
+			position: fixed;
+			top: 0;
+			width: 100%;
+			left: 0;
+			background: #292929;
+			color: #fff;
+			padding: 15px;
+			opacity: 0;
+			box-shadow: 0px 1px 8px rgba(0, 0, 0, .2);
+			z-index: 2000;
+			transform: translateY(-1000px);
+			visibility: visible;
+			margin-bottom: 0 !important;
+		}
 
-    .sticky-nav-wrapper-mobile ul a {
-      color: #fff;
-      padding: 0 15px;
-    }
+		.sticky-nav-wrapper-mobile ul a:hover {
+			display: inline-block;
+			padding: 0 15px;
+			background: #3a3a3a;
+		}
 
-    .sticky-nav-wrapper-mobile .kochava-button-green,
-    .sticky-nav-wrapper-mobile h4 {
-      margin-left: 15px;
-      color: #fff !important;
-    }
+		.sticky-nav-wrapper-mobile ul a {
+			color: #fff;
+			padding: 0 15px;
+		}
 
-    .sticky-nav-mobile-click {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      left: 0;
-      background: #292929;
-      color: #fff;
-	  font-size: 13px;
-	  padding: 0 14px 0 31px;
-      z-index: 2000;
-      margin-bottom: 0 !important;
-      opacity: 0;
-      transform: none;
-      transition: all .2s ease;
-    }
+		.sticky-nav-wrapper-mobile .kochava-button-green,
+		.sticky-nav-wrapper-mobile h4 {
+			margin-left: 15px;
+			color: #fff !important;
+		}
 
-    .sticky-nav-mobile-click.active {
-      opacity: 1;
-      transition: all .2s ease;
-    }
+		.sticky-nav-mobile-click {
+			position: fixed;
+			top: 0;
+			width: 100%;
+			left: 0;
+			background: #292929;
+			color: #fff;
+			font-size: 13px;
+			padding: 0 14px 0 31px;
+			z-index: 2000;
+			margin-bottom: 0 !important;
+			opacity: 0;
+			transform: none;
+			transition: all .2s ease;
+		}
 
-    #sticky-nav-mobile-icon {
-      background: transparent;
-      font-size: 13px;
-	  line-height: 33px;
-	  width: 25px;
-      transform: translateY(0);
-      transition: all .3s ease;
-    }
+		.sticky-nav-mobile-click.active {
+			opacity: 1;
+			transition: all .2s ease;
+		}
 
-    #sticky-nav-mobile-icon.active {
-      transform: rotate(180deg);
-    }
-	  
-    .sticky-back-to-top {
-	padding: 25px 10px 0 0;
-	text-align: right;
-	position: absolute;
-	right: 15px;
-	bottom: 35px;
-    }
-	  
-    .sticky-back-to-top .icon-angle-up {
-	font-size: 14px;
-	line-height: 30px;
-	border: 1px solid #fff;
-	background: transparent;
-    }
+		#sticky-nav-mobile-icon {
+			background: transparent;
+			font-size: 13px;
+			line-height: 33px;
+			width: 25px;
+			transform: translateY(0);
+			transition: all .3s ease;
+		}
 
-    @media (min-width: 690px) {
-      .sticky-nav-mobile-click {
-        padding-right: 23px;
-      }
-    }
+		#sticky-nav-mobile-icon.active {
+			transform: rotate(180deg);
+		}
 
-    @media (min-width: 1000px) {
-      .sticky-nav-wrapper {
-        display: block;
-      }
+		.sticky-back-to-top {
+			padding: 25px 10px 0 0;
+			text-align: right;
+			position: absolute;
+			right: 15px;
+			bottom: 32px;
+		}
 
-      .sticky-nav-wrapper-mobile {
-        display: none;
-      }
+		.sticky-back-to-top .icon-angle-up {
+			font-size: 14px;
+			line-height: 30px;
+			border: 1px solid #fff;
+			background: transparent;
+		}
 
-      .sticky-nav-mobile-click {
-        display: none;
-      }
-    }
-  </style>
+		@media (min-width: 690px) {
+			.sticky-nav-mobile-click {
+				padding-right: 23px;
+			}
+		}
 
-  <?php if ($layout === 'button-top') { ?>
+		@media (min-width: 1000px) {
+			.sticky-nav-wrapper {
+				display: block;
+			}
 
-  <div id="sticky-nav-<?php echo get_the_ID(); ?>" class="sticky-nav-wrapper">
-    <h4><?php echo $cta_text; ?></h4>
-    <a style="margin-bottom: 20px;" class="kochava-button-green" href="<?php echo $cta_url; ?>" target="_blank"><?php echo $cta_btn_text; ?></a>
-    <ul>
-      <?php
-      foreach ($titles as $key => $value) {
-        echo $value = '<li><a href=' . $value['url'] . ' target=' . $value['new_tab'] . '>' . $value['title'] . '</a></li>';
-      }
-      ?>
-    </ul>
-  </div>
+			.sticky-nav-wrapper-mobile {
+				display: none;
+			}
 
-<?php } else { ?>
+			.sticky-nav-mobile-click {
+				display: none;
+			}
+		}
+	</style>
 
-  <div id="stick-nav-<?php echo get_the_ID(); ?>" class="sticky-nav-wrapper">
-    <ul>
-      <?php
-      foreach ($titles as $key => $value) {
-        echo $value = '<li><a href=' . $value['url'] . ' target=' . $value['new_tab'] . '>' . $value['title'] . '</a></li>';
-      }
-      ?>
-    </ul>
-    <h4><?php echo $cta_text; ?></h4>
-    <a class="kochava-button-green" href="<?php echo $cta_url; ?>" target="_blank"><?php echo $cta_btn_text; ?></a>
-  </div>
+	<?php if ($layout === 'button-top') { ?>
 
-<?php } ?>
+		<div id="sticky-nav-<?php echo get_the_ID(); ?>" class="sticky-nav-wrapper">
+			<h4><?php echo $cta_text; ?></h4>
+			<a style="margin-bottom: 20px;" class="kochava-button-green" href="<?php echo $cta_url; ?>" target="_blank"><?php echo $cta_btn_text; ?></a>
+			<ul>
+				<?php
+				foreach ($titles as $key => $value) {
+					echo $value = '<li><a href=' . $value['url'] . ' target=' . $value['new_tab'] . '>' . $value['title'] . '</a></li>';
+				}
+				?>
+			</ul>
+		</div>
 
-  <!-- Mobile Menu Template -->
-  <div id="sticky-top" class="sticky-nav-mobile-click">Menu<i id="sticky-nav-mobile-icon" class="icon-angle-down"></i></div>
-  <div id="stick-nav-mobile-<?php echo get_the_ID(); ?>" class="sticky-nav-wrapper-mobile">
-    <ul>
-      <?php
-      foreach ($titles as $key => $value) {
-        echo $value = '<li><a href=' . $value['url'] . ' target=' . $value['new_tab'] . '>' . $value['title'] . '</a></li>';
-      }
-      ?>
-    </ul>
-    <h4><?php echo $cta_text; ?></h4>
-    <a class="kochava-button-green" href="<?php echo $cta_url; ?>" target="_blank"><?php echo $cta_btn_text; ?></a>
-	  <span id="sticky-back-to-top" class="sticky-back-to-top"><i class="icon-angle-up"></i></span>
-  </div>
+	<?php } else { ?>
 
-  <script>
-    jQuery(document).ready(function($) {
-      /* Selectors */
-      var $wpadmin = $('#wpadminbar')
-      var $window = $(window)
-      var $stickyNavWrapper = $('.sticky-nav-wrapper')
-      var $stickyParentRow = $stickyNavWrapper.parents('.wpb_row')
-      var $stickyNavMobileClick = $('.sticky-nav-mobile-click')
-      var $stickyNavMobileWrapper = $('.sticky-nav-wrapper-mobile')
-      var $stickyNavMobileIcon = $('#sticky-nav-mobile-icon')
-      var $bodyHtml = $('body, html')
-      var $stickyBackToTop = $('#sticky-back-to-top')
+		<div id="stick-nav-<?php echo get_the_ID(); ?>" class="sticky-nav-wrapper">
+			<ul>
+				<?php
+				foreach ($titles as $key => $value) {
+					echo $value = '<li><a href=' . $value['url'] . ' target=' . $value['new_tab'] . '>' . $value['title'] . '</a></li>';
+				}
+				?>
+			</ul>
+			<h4><?php echo $cta_text; ?></h4>
+			<a class="kochava-button-green" href="<?php echo $cta_url; ?>" target="_blank"><?php echo $cta_btn_text; ?></a>
+		</div>
 
-      /* Getters, Setters and Calcs */
-      var $navHeight = $('#header-outer').outerHeight()
-      var stickyParentHeight = $stickyParentRow.outerHeight()
-      var stickyNavWrapperHeight = $stickyNavWrapper.outerHeight()
-      var stickyParentRowPadding = parseFloat($stickyParentRow.css('padding-top'))
-      var stickyNavMobileHeight = $('.sticky-nav-wrapper-mobile').outerHeight()
-      var stickyNavMobileClickHeight = $('.sticky-nav-mobile-click').outerHeight()
-      var offsetCalc = getPageheaderOffset()
-      var $wpadminHeight = 0
-      var $windowHeight = $window.height()
+	<?php } ?>
 
-      /** Get pageheader offset to set sticky */
-      function getPageheaderOffset() {
-        var offset = $stickyNavWrapper.parents('.wpb_column').offset()
-        return offset.top - (getNavHeight() + stickyParentRowPadding)
-      }
+	<!-- Mobile Menu Template -->
+	<div id="sticky-top" class="sticky-nav-mobile-click">Menu<i id="sticky-nav-mobile-icon" class="icon-angle-down"></i></div>
+	<div id="stick-nav-mobile-<?php echo get_the_ID(); ?>" class="sticky-nav-wrapper-mobile">
+		<ul>
+			<?php
+			foreach ($titles as $key => $value) {
+				echo $value = '<li><a href=' . $value['url'] . ' target=' . $value['new_tab'] . '>' . $value['title'] . '</a></li>';
+			}
+			?>
+		</ul>
+		<h4><?php echo $cta_text; ?></h4>
+		<a class="kochava-button-green" href="<?php echo $cta_url; ?>" target="_blank"><?php echo $cta_btn_text; ?></a>
+		<span id="sticky-back-to-top" class="sticky-back-to-top"><i class="icon-angle-up"></i></span>
+	</div>
 
-      /** NavHeight getter to update depending on watcher */
-      function getNavHeight() {
-	if($wpadmin.length > 0) {
-		$wpadminHeight = $wpadmin.height()
-		$navHeight = $wpadminHeight + $('#header-outer').outerHeight()
-		return $navHeight
-	} else {
-		return $('#header-outer').outerHeight()
-	}
-      }
+	<script>
+		jQuery(document).ready(function($) {
+			/* Selectors */
+			var $wpadmin = $('#wpadminbar')
+			var $window = $(window)
+			var $stickyNavWrapper = $('.sticky-nav-wrapper')
+			var $stickyParentRow = $stickyNavWrapper.parents('.wpb_row')
+			var $stickyNavMobileClick = $('.sticky-nav-mobile-click')
+			var $stickyNavMobileWrapper = $('.sticky-nav-wrapper-mobile')
+			var $stickyNavMobileIcon = $('#sticky-nav-mobile-icon')
+			var $bodyHtml = $('body, html')
+			var $stickyBackToTop = $('#sticky-back-to-top')
+			var $chat = $('#fc_frame, #fc_frame.fc-widget-normal')
+			var $salientRow = $('.wpb_row > .span_12')
 
-      /** Calculates sticky in relation to header and row padding */
-      function calcSticky() {
-        return getNavHeight() + stickyParentRowPadding
-      }
+			/* Getters, Setters and Calcs */
+			var $navHeight = $('#header-outer').outerHeight(true)
+			var stickyParentHeight = $stickyParentRow.outerHeight()
+			var stickyNavWrapperHeight = $stickyNavWrapper.outerHeight(true)
+			var stickyParentRowPadding = parseFloat($stickyParentRow.css('padding-top'))
+			var stickyNavMobileHeight = $('.sticky-nav-wrapper-mobile').outerHeight(true)
+			var stickyNavMobileClickHeight = $('.sticky-nav-mobile-click').outerHeight(true)
+			var offsetCalc = getPageheaderOffset()
+			var $wpadminHeight = 0
+			var $windowHeight = $window.height()
 
-      /** Calculate scroll to engage menu to stick to bottom of element */
-      function bottomSticky() {
-        return navMobileSticky() + stickyParentHeight - stickyNavWrapperHeight - stickyParentRowPadding
-      }
+			/** Get pageheader offset to set sticky */
+			function getPageheaderOffset() {
+				var offset = $stickyNavWrapper.parents('.wpb_column').offset()
+				return offset.top - (getNavHeight() + stickyParentRowPadding)
+			}
 
-      /** Page Header Height for Mobile, Salient page header or custom header */
-      function navMobileSticky() {
-        var pageHeader = $('#page-header-wrap')
-        var topLevel = $('.wpb_row.top-level')
-        var pageHeaderHeight
-        if (pageHeader.length > 0) {
-          pageHeaderHeight = pageHeader.outerHeight()
-        }
-        if (topLevel.length > 0) {
-          pageHeaderHeight = topLevel.outerHeight()
-        }
-        return pageHeaderHeight
-      }
+			/** NavHeight getter to update depending on watcher */
+			function getNavHeight() {
+				if($wpadmin.length > 0) {
+					$wpadminHeight = $wpadmin.height()
+					$navHeight = $wpadminHeight + $('#header-outer').outerHeight(true)
+					return $navHeight
+				} else {
+					return $('#header-outer').outerHeight(true)
+				}
+			}
 
-      /** Mobile sticky nav menu on load */
-      var isOpen = false //set toggle of mobile open/close
-      $stickyNavMobileWrapper.css({
-        top: (getNavHeight() + $stickyNavMobileClick.outerHeight()) + 'px'
-      })
+			/** Calculates sticky in relation to header and row padding */
+			function calcSticky() {
+				return getNavHeight() + stickyParentRowPadding
+			}
 
-      /** icon animation */
-      $stickyNavMobileClick.on('click', function() {
-        isOpen = !isOpen
-	if($windowHeight < 500){
-	  $stickyNavMobileWrapper.css({
-		  overflowY: 'scroll',
-		  height: stickyNavMobileHeight = 400
-	  })
+			/** Calculate scroll to engage menu to stick to bottom of element */
+			function bottomSticky() {
+				return navMobileSticky() + stickyParentHeight - stickyNavWrapperHeight - stickyParentRowPadding
+			}
 
-	  $('.sticky-back-to-top').css({
-		  bottom: '-20px'
-	  })
-	}
-		  
-        if (isOpen) {
-          $stickyNavMobileWrapper.css({
-            transition: 'transform .4s ease, opacity .4s ease .25s, visibility .4s ease',
-            opacity: 1,
-            transform: 'translateY(0)',
-			visibility: 'visible',
-			height: stickyNavMobileHeight
-          })
-          $stickyNavMobileIcon.addClass('active')
-			
-	  $('.wpb_row > .span_12').css({
-		zIndex: 'initial' 
-	  })
-			
-		  $('#fc_frame, #fc_frame.fc-widget-normal').css({
-			display: 'none'
-		  })
-        }
-        else {
-          $stickyNavMobileWrapper.css({
-            transition: 'transform .4s ease .3s, opacity .4s ease, visibility .4s ease',
-            opacity: 0,
-            transform: 'translateY(-' + (stickyNavMobileHeight + stickyNavMobileClickHeight) + 'px)',
-			visibility: 'hidden',
-			height: 'initial'
-          })
-          $stickyNavMobileIcon.removeClass('active')
-	    $('.wpb_row > .span_12').css({
-		zIndex: '10' 
-	    })
+			/** Page Header Height for Mobile, Salient page header or custom header */
+			function navMobileSticky() {
+				var pageHeader = $('#page-header-wrap')
+				var topLevel = $('.wpb_row.top-level')
+				var pageHeaderHeight
+				if (pageHeader.length > 0) {
+					pageHeaderHeight = pageHeader.outerHeight(true)
+				}
+				if (topLevel.length > 0) {
+					pageHeaderHeight = topLevel.outerHeight(true)
+				}
+				return pageHeaderHeight
+			}
 
-	    $('#fc_frame, #fc_frame.fc-widget-normal').css({
-		display: 'block'
-	    })
-        }
-      })
-		
-	  /** Helper function handling menu close animations/classes */
-      function menuCloseFunc(){
-	isOpen = false
-        $stickyNavMobileWrapper.css({
-          transform: 'translateY(-' + (stickyNavMobileHeight + stickyNavMobileClickHeight) + 'px)'
-        })
-        $stickyNavMobileIcon.removeClass('active')
-		  
-	$('#fc_frame, #fc_frame.fc-widget-normal').css({
-	  display: 'block'
-	})
-      }
+			/** Mobile sticky nav menu on load */
+			var isOpen = false //set toggle of mobile open/close
+			$stickyNavMobileWrapper.css({
+				top: (getNavHeight() + $stickyNavMobileClick.outerHeight(true)) + 'px'
+			})
 
-      /** Menu close on link click */
-      $stickyNavMobileWrapper.find('a').on('click', function() {
-	menuCloseFunc()
-      })
+			/** Menu click && icon animation */
+			$stickyNavMobileClick.on('click', function() {
+				isOpen = !isOpen
+				if($windowHeight < 500){
+					$stickyNavMobileWrapper.css({
+						overflowY: 'scroll',
+						height: stickyNavMobileHeight = 400
+					})
 
-      /* watch scroll postion */
-      $window.on('scroll resize', function() {
-        /** Set sticky nav location to below header Desktop */
-        if ($window.scrollTop() <= getPageheaderOffset() && $window.outerWidth() > 1000) {
-          $stickyNavWrapper.css({
-            position: 'static',
-            transform: 'translateY(0)'
-          })
-        }
-        else if ($window.scrollTop() >= getPageheaderOffset() && $window.outerWidth() > 1000) {
-          $stickyNavWrapper.css({
-            position: 'fixed',
-            top: 0,
-            transform: 'translateY(' + calcSticky() + 'px )',
-            marginBottom: 'auto'
-          })
-        }
-        else {
-          $stickyNavWrapper.css({
-            position: 'static',
-            transform: 'translateY(0)'
-          })
-        }
+					$('.sticky-back-to-top').css({
+						bottom: '-20px'
+					})
+				}
 
-        /* threshold for stickynav to stick to bottom */
-        if ($window.scrollTop() >= bottomSticky() && $window.outerWidth() > 1000) {
-          $stickyNavWrapper.css({
-            position: 'absolute',
-            transform: 'translateY(0)',
-            top: 'auto',
-            bottom: 0,
-            marginBottom: 0
-          })
-        }
+				if (isOpen) {
+					$stickyNavMobileWrapper.css({
+						transition: 'transform .4s ease, opacity .4s ease .25s, visibility .4s ease',
+						opacity: 1,
+						transform: 'translateY(0)',
+						visibility: 'visible',
+						height: stickyNavMobileHeight
+					})
+					$stickyNavMobileIcon.addClass('active')
 
-        /* engage mobile sticky nav */
-        if ($window.scrollTop() >= navMobileSticky()) {
-          $stickyNavMobileClick.css({
-			transition: 'all .2s ease',
-            transform: 'translateY(' + (getNavHeight()) + 'px)'
-          })
-          $stickyNavMobileWrapper.css({
-            top: (getNavHeight() + $stickyNavMobileClick.outerHeight()) + 'px'
-          })
-          $stickyNavMobileClick.addClass('active')
-        }
-        else {
-          $stickyNavMobileClick.css({
-            transition: 'all .6s ease',
-            transform: 'translateY(0)'
-          })
-          $stickyNavMobileClick.removeClass('active')
-		  
-		  /** handle close menu when menu click hides */
-		  setTimeout(function(){
-			isOpen = false
-		  	$stickyNavMobileIcon.removeClass('active')
-		  },500)
-		  	 
-		  $stickyNavMobileWrapper.css({
-			visibility: 'hidden',
-            transition: 'transform .4s ease .5s, opacity 0s ease, visibility 0s ease',
-            opacity: 0,
-            transform: 'translateY(-' + (stickyNavMobileHeight + stickyNavMobileClickHeight) + 'px)'
-          })
-          
-		  $('.wpb_row > .span_12').css({
-			zIndex: '10' 
-		  }) 		  
-        }
-      })
-		
-	  $stickyBackToTop.on('click touchend',(function(){
-        menuCloseFunc()
-        $stickyNavMobileIcon.removeClass('active')
-		  setTimeout(function(){
-			  $bodyHtml.animate({scrollTop: 0}, 800)
-		  }, 300)  
-	  }))
-    })
+					$salientRow.css({
+						zIndex: 'initial'
+					})
 
-  </script>
+					$chat.css({
+						display: 'none'
+					})
+				}
+				else {
+					$stickyNavMobileWrapper.css({
+						transition: 'transform .4s ease .3s, opacity .4s ease, visibility .4s ease',
+						opacity: 0,
+						transform: 'translateY(-' + (stickyNavMobileHeight + stickyNavMobileClickHeight) + 'px)',
+						visibility: 'hidden',
+						height: 'initial'
+					})
+					$stickyNavMobileIcon.removeClass('active')
+					$salientRow.css({
+						zIndex: '10'
+					})
 
-  <?php
-  $sticky_menu = ob_get_contents();
-  ob_end_clean();
-  return $sticky_menu;
+					$chat.css({
+						display: 'block'
+					})
+				}
+			})
+
+			/** Helper function handling menu close animations/classes */
+			function menuCloseFunc(){
+				isOpen = false
+				$stickyNavMobileWrapper.css({
+					transform: 'translateY(-' + (stickyNavMobileHeight + stickyNavMobileClickHeight) + 'px)'
+				})
+				$stickyNavMobileIcon.removeClass('active')
+
+				$chat.css({
+					display: 'block'
+				})
+			}
+
+			/** Menu close on link click */
+			$stickyNavMobileWrapper.find('a').on('click', function() {
+				menuCloseFunc()
+			})
+
+			/* watch scroll postion */
+			$window.on('scroll resize', function() {
+				/** Set sticky nav location to below header Desktop */
+				if ($window.scrollTop() <= getPageheaderOffset() && $window.outerWidth() > 1000) {
+					$stickyNavWrapper.css({
+						position: 'static',
+						transform: 'translateY(0)'
+					})
+				}
+				else if ($window.scrollTop() >= getPageheaderOffset() && $window.outerWidth() > 1000) {
+					$stickyNavWrapper.css({
+						position: 'fixed',
+						top: 0,
+						transform: 'translateY(' + calcSticky() + 'px )',
+						marginBottom: 'auto'
+					})
+				}
+				else {
+					$stickyNavWrapper.css({
+						position: 'static',
+						transform: 'translateY(0)'
+					})
+				}
+
+				/* threshold for stickynav to stick to bottom */
+				if ($window.scrollTop() >= bottomSticky() && $window.outerWidth() > 1000) {
+					$stickyNavWrapper.css({
+						position: 'absolute',
+						transform: 'translateY(0)',
+						top: 'auto',
+						bottom: 0,
+						marginBottom: 0
+					})
+				}
+
+				/* engage mobile sticky nav */
+				if ($window.scrollTop() >= navMobileSticky()) {
+					$stickyNavMobileClick.css({
+						transition: 'all .2s ease',
+						transform: 'translateY(' + (getNavHeight()) + 'px)'
+					})
+					$stickyNavMobileWrapper.css({
+						top: (getNavHeight() + $stickyNavMobileClick.outerHeight()) + 'px'
+					})
+					$stickyNavMobileClick.addClass('active')
+				}
+				else {
+					$stickyNavMobileClick.css({
+						transition: 'all .6s ease',
+						transform: 'translateY(0)'
+					})
+					$stickyNavMobileClick.removeClass('active')
+
+					/** handle close menu when menu click hides */
+					setTimeout(function(){
+						isOpen = false
+						$stickyNavMobileIcon.removeClass('active')
+					},500)
+
+					$stickyNavMobileWrapper.css({
+						visibility: 'hidden',
+						transition: 'transform .4s ease .5s, opacity 0s ease, visibility 0s ease',
+						opacity: 0,
+						transform: 'translateY(-' + (stickyNavMobileHeight + stickyNavMobileClickHeight) + 'px)'
+					})
+
+					$salientRow.css({
+						zIndex: '10'
+					})
+				}
+			})
+
+			/** Back to top on mobile menu */
+			$stickyBackToTop.on('click touchend',(function(){
+				menuCloseFunc()
+				$stickyNavMobileIcon.removeClass('active')
+				setTimeout(function(){
+					$bodyHtml.animate({scrollTop: 0}, 800)
+				}, 300)
+			}))
+		})
+
+	</script>
+
+	<?php
+	$sticky_menu = ob_get_contents();
+	ob_end_clean();
+	return $sticky_menu;
 }
 
 add_shortcode('sticky_nav_menu', 'load_sticky_nav_menu');
